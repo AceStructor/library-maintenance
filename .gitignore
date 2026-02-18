@@ -1,5 +1,4 @@
 .env
-go.sum
 node_modules
 .vscode
 package-lock.json

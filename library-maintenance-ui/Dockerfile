@@ -3,10 +3,10 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY library-maintenance-api/package*.json ./
 RUN npm install
 
-COPY . .
+COPY library-maintenance-ui/. .
 RUN npm run build
 
 

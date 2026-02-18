@@ -8,7 +8,7 @@ export const albumApi = axios.create({
 });
 
 export const youtubeApi = axios.create({
-  baseURL: "http://zelda:6000", 
+  baseURL: "http://zelda:5001", 
   headers: {
     "Content-Type": "application/json",
   },

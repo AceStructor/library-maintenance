@@ -14,5 +14,5 @@ FROM alpine:3.21 AS final
 
 COPY --from=builder /app /bin/app
 
-EXPOSE 6000
+EXPOSE 5001
 CMD ["bin/app"]

@@ -3,7 +3,7 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-COPY library-maintenance-api/package*.json ./
+COPY library-maintenance-ui/package*.json ./
 RUN npm install
 
 COPY library-maintenance-ui/. .

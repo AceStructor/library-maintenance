@@ -32,7 +32,8 @@
             <tr
                 v-for="item in results"
                 :key="item.track_id"
-                :class="{ selected: selected?.track_id === item.track_id }"
+                :class="{ selected: selected && selected?.track_id === item.track_id }"
+                class="hover:bg-gray-700 cursor-pointer"
                 @click="selectItem(item)"
             >
                 <td>{{ item.artist }}</td>
@@ -46,17 +47,29 @@
     </div>
 
     <!-- Detail Section -->
-    <div v-if="selected" class="detail-section">
+    <div 
+        v-if="selected"
+        class="details detail-section flex flex-col gap-2"
+    >
         <h3>Details</h3>
 
-        <label>Artist</label>
-        <input type="text" :value="selected.artist" readonly />
+        <div class="detail-row">
+            <span class="label">Artist: </span>
+            <span class="value">{{ selected.artist }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="label">Title: </span>
+            <span class="value">{{ selected.title }}</span>
+        </div>
 
-        <label>Album</label>
-        <input type="text" :value="selected.album" readonly />
-
-        <label>Title</label>
-        <input type="text" :value="selected.title" readonly />
+        <div class="detail-row">
+            <div class="detail-row">
+                <span class="label">Album: </span>
+                <span class="value">{{ selected.album }}</span>
+            </div>
+            <span class="value">{{ selected.album_mbid }}</span>
+            <hr>
+        </div>
 
         <label>Youtube Code</label>
         <input
@@ -64,10 +77,7 @@
         v-model="editedYoutubeCode"
         />
 
-        <label>File Path</label>
-        <input type="text" :value="selected.file_path" readonly />
-
-        <div>
+        <div class="flex items-center gap-2">
             <input type="checkbox" v-model="retryDownload" />
             <label>Download wiederholen</label>
         </div>
@@ -210,13 +220,20 @@ td, th {
   padding: 8px;
 }
 tr:hover {
-  background-color: #f5f5f5;
+  background-color: #434547;
   cursor: pointer;
 }
 .selected {
-  background-color: #d0eaff;
+  background-color: #643a3a;
 }
 .detail-section {
   margin-top: 20px;
+}
+
+.details input {
+  margin-bottom: 0.5rem;
+}
+.details .checkbox-row {
+  margin-top: 0.5rem;
 }
 </style>

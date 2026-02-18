@@ -1,0 +1,14 @@
+services:
+  library-maintenance-api:
+    build: 
+      context: .
+      dockerfile: library-maintenance-api/Dockerfile
+    env_file:
+      - .env
+
+  library-maintenance-ui:
+    build: 
+      context: .
+      dockerfile: library-maintenance-ui/Dockerfile
+    env_file:
+      - .env

@@ -18,8 +18,13 @@ type QueryRequest struct {
 	Query string `json:"query"`
 }
 
-type SearchRequest struct {
+type ArtistSearchRequest struct {
 	Artist string `json:"artist"`
+}
+
+type GenreUpdateRequest struct {
+	ArtistID string `json:"artist_id"`
+	Genre string `json:"genre"`
 }
 
 type TrackResult struct {
@@ -32,6 +37,16 @@ type TrackResult struct {
 	YoutubeCode    *string `json:"youtube_code"`
 	DownloadStatus string  `json:"download_status"`
 	FilePath       *string `json:"file_path"`
+}
+
+type ArtistGenreResult struct {
+    ArtistID: number
+    Artist: string
+    Genres: string[]
+}
+
+type GenreResult struct {
+	Genre: string
 }
 
 type UpdateRequest struct {
@@ -87,7 +102,7 @@ func main() {
 	r.Use(cors.Default())
 
 	r.POST("/youtube/search", func(c *gin.Context) {
-		var req SearchRequest
+		var req ArtistSearchRequest
 
 		if err := c.BindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, err.Error())
@@ -193,6 +208,297 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{
 			"status": "updated",
 		})
+	})
+
+	r.POST("/artistgenres", func(c *gin.Context) {
+		var req ArtistSearchRequest
+
+		if err := c.BindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		tx, err := dbPool.Begin(context.Background())
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+		defer tx.Rollback(context.Background())
+
+		searchQuery := `
+		SELECT 
+			a.id AS artist_id, 
+			a.name AS name,
+			ARRAY_AGG(DISTINCT g.name ORDER BY g.name) AS genres
+		FROM artist_genres ag
+		JOIN artists a ON a.id = ag.artist_id
+		JOIN genres g ON g.id = ag.genre_id
+		WHERE LOWER(a.name) LIKE LOWER($1)
+		GROUP BY a.id, a.name
+		`
+
+		rows, err := dbPool.Query(context.Background(), searchQuery, "%"+req.Artist+"%")
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+		defer rows.Close()
+
+		results := []ArtistGenreResult{}
+
+		for rows.Next() {
+			var r ArtistGenreResult
+
+			err := rows.Scan(
+				&r.ArtistID,
+				&r.Artist,
+				&r.Genres,
+			)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, err.Error())
+				return
+			}
+
+			results = append(results, r)
+		}
+
+		c.JSON(http.StatusOK, results)
+	})
+
+	r.POST("/artistgenres/all", func(c *gin.Context) {
+		tx, err := dbPool.Begin(context.Background())
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+		defer tx.Rollback(context.Background())
+
+		searchQuery := `
+		SELECT 
+			a.id AS artist_id,
+			a.name,
+			COALESCE(
+				ARRAY_AGG(DISTINCT g.name ORDER BY g.name)
+					FILTER (WHERE g.name IS NOT NULL),
+				ARRAY[]::text[]
+			) AS genres
+		FROM artists a
+		LEFT JOIN artist_genres ag ON ag.artist_id = a.id
+		LEFT JOIN genres g ON g.id = ag.genre_id
+		GROUP BY a.id, a.name
+		ORDER BY a.name;
+		`
+
+		rows, err := dbPool.Query(context.Background(), searchQuery)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+		defer rows.Close()
+
+		results := []ArtistGenreResult{}
+
+		for rows.Next() {
+			var r ArtistGenreResult
+
+			err := rows.Scan(
+				&r.ArtistID,
+				&r.Artist,
+				&r.Genres,
+			)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, err.Error())
+				return
+			}
+
+			results = append(results, r)
+		}
+
+		c.JSON(http.StatusOK, results)
+	})
+
+	r.POST("/artistgenres/all/nogenre", func(c *gin.Context) {
+		tx, err := dbPool.Begin(context.Background())
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+		defer tx.Rollback(context.Background())
+
+		searchQuery := `
+		SELECT 
+			a.id AS artist_id,
+			a.name,
+			ARRAY[]::text[] AS genres
+		FROM artists a
+		WHERE NOT EXISTS (
+			SELECT 1
+			FROM artist_genres ag
+			WHERE ag.artist_id = a.id
+		)
+		ORDER BY a.name;
+		`
+
+		rows, err := dbPool.Query(context.Background(), searchQuery)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+		defer rows.Close()
+
+		results := []ArtistGenreResult{}
+
+		for rows.Next() {
+			var r ArtistGenreResult
+
+			err := rows.Scan(
+				&r.ArtistID,
+				&r.Artist,
+				&r.Genres,
+			)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, err.Error())
+				return
+			}
+
+			results = append(results, r)
+		}
+
+		c.JSON(http.StatusOK, results)
+	})
+
+	r.POST("/artistgenres/deletebyname", func(c *gin.Context) {
+		var req GenreUpdateRequest
+
+		if err := c.BindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		tx, err := dbPool.Begin(context.Background())
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+		defer tx.Rollback(context.Background())
+
+		deleteQuery := `
+		DELETE FROM artist_genres ag
+		USING genres g
+		WHERE ag.artist_id = $1
+		AND g.name = $2
+		AND ag.genre_id = g.id;
+		`
+
+		_, err = tx.Exec(
+			context.Background(),
+			addQuery,
+			req.ArtistID,
+			req.Genre,
+		)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		if err := tx.Commit(context.Background()); err != nil {
+			c.JSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"status": "updated",
+		})
+
+	})
+
+	r.POST("/artistgenres/addbyname", func(c *gin.Context) {
+		var req GenreUpdateRequest
+
+		if err := c.BindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		tx, err := dbPool.Begin(context.Background())
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+		defer tx.Rollback(context.Background())
+
+		addQuery := `
+		WITH new_genre AS (
+			INSERT INTO genres (name)
+			VALUES ($2)
+			ON CONFLICT (name) DO UPDATE
+				SET name = EXCLUDED.name
+			RETURNING id
+		)
+		INSERT INTO artist_genres (artist_id, genre_id)
+		SELECT $1, id
+		FROM new_genre
+		ON CONFLICT DO NOTHING;
+		`
+
+		_, err = tx.Exec(
+			context.Background(),
+			addQuery,
+			req.ArtistID,
+			req.Genre,
+		)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		if err := tx.Commit(context.Background()); err != nil {
+			c.JSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"status": "updated",
+		})
+	})
+
+	r.POST("/genres", func(c *gin.Context) {
+		tx, err := dbPool.Begin(context.Background())
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+		defer tx.Rollback(context.Background())
+
+		searchQuery := `
+		SELECT name
+		FROM genres
+		`
+
+		rows, err := dbPool.Query(context.Background(), searchQuery)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+		defer rows.Close()
+
+		results := []GenreResult{}
+
+		for rows.Next() {
+			var r GenreResult
+
+			err := rows.Scan(
+				&r.Genre,
+			)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, err.Error())
+				return
+			}
+
+			results = append(results, r)
+		}
+
+		c.JSON(http.StatusOK, results)
 	})
 
 	r.Run(":5001")

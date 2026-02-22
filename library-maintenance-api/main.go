@@ -227,14 +227,19 @@ func main() {
 
 		searchQuery := `
 		SELECT 
-			a.id AS artist_id, 
-			a.name AS name,
-			ARRAY_AGG(DISTINCT g.name ORDER BY g.name) AS genres
-		FROM artist_genres ag
-		JOIN artists a ON a.id = ag.artist_id
-		JOIN genres g ON g.id = ag.genre_id
+			a.id AS artist_id,
+			a.name,
+			COALESCE(
+				ARRAY_AGG(DISTINCT g.name ORDER BY g.name)
+					FILTER (WHERE g.name IS NOT NULL),
+				ARRAY[]::text[]
+			) AS genres
+		FROM artists a
+		LEFT JOIN artist_genres ag ON ag.artist_id = a.id
+		LEFT JOIN genres g ON g.id = ag.genre_id
 		WHERE LOWER(a.name) LIKE LOWER($1)
 		GROUP BY a.id, a.name
+		ORDER BY a.name;
 		`
 
 		rows, err := dbPool.Query(context.Background(), searchQuery, "%"+req.Artist+"%")

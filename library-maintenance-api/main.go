@@ -40,9 +40,9 @@ type TrackResult struct {
 }
 
 type ArtistGenreResult struct {
-    ArtistID   number
-    Artist     string
-    Genres     string[]
+	ArtistID   int
+	Artist     string
+	Genres     []string
 }
 
 type GenreResult struct {

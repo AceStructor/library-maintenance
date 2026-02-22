@@ -392,7 +392,7 @@ func main() {
 
 		_, err = tx.Exec(
 			context.Background(),
-			addQuery,
+			deleteQuery,
 			req.ArtistID,
 			req.Genre,
 		)

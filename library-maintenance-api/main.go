@@ -23,7 +23,7 @@ type ArtistSearchRequest struct {
 }
 
 type GenreUpdateRequest struct {
-	ArtistID string `json:"artist_id"`
+	ArtistID int `json:"artist_id"`
 	Genre string `json:"genre"`
 }
 

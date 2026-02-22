@@ -46,7 +46,8 @@ type ArtistGenreResult struct {
 }
 
 type GenreResult struct {
-	Genre      string		`json:"genre"`
+	GenreID      string		`json:"id"`
+	Name      string		`json:"name"`
 }
 
 type UpdateRequest struct {
@@ -476,7 +477,7 @@ func main() {
 		defer tx.Rollback(context.Background())
 
 		searchQuery := `
-		SELECT name
+		SELECT id, name
 		FROM genres
 		`
 
@@ -493,7 +494,8 @@ func main() {
 			var r GenreResult
 
 			err := rows.Scan(
-				&r.Genre,
+				&r.GenreID,
+				&r.Name,
 			)
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, err.Error())

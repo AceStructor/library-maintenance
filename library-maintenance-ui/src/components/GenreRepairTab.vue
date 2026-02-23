@@ -81,12 +81,8 @@
 
             <div class="text-gray-400">Aktuelle Genres</div>
             <div class="flex flex-wrap gap-2">
-            <span
-                v-for="g in selectedArtist.genres"
-                :key="g"
-                class="bg-gray-700 px-2 py-1 rounded text-sm"
-            >
-                {{ g }}
+            <span class="bg-gray-700 px-2 py-1 rounded text-sm">
+                {{ selectedArtist.genres.join(', ') }}
             </span>
             </div>
         </div>

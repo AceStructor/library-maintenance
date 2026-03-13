@@ -7,6 +7,7 @@ services:
       - 5001:5001
     env_file:
       - .env
+    restart: unless-stopped
 
   library-maintenance-ui:
     build: 
@@ -16,3 +17,4 @@ services:
       - 80:80
     env_file:
       - .env
+    restart: unless-stopped

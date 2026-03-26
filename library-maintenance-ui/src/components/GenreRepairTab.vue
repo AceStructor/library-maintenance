@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Youtube Code Repair</h2>
+    <h2>Genre Repair</h2>
 
     <!-- Search Section -->
     <div>
@@ -177,7 +177,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { songApi } from "../api/client";
+import { localApi } from "../api/client";
 
 interface Artist {
     id: number
@@ -209,19 +209,19 @@ const error = ref("");
 // =======================
 
 async function searchArtists() {
-    const res = await songApi.post("/artistgenres", {
+    const res = await localApi.post("/artistgenres", {
       artist: searchTerm.value,
     });
     artists.value = await res.data;
 }
 
 async function loadArtistsWithoutGenre() {
-    const res = await songApi.post("/artistgenres/all/nogenre");
+    const res = await localApi.post("/artistgenres/all/nogenre");
     artists.value = await res.data;
 }
 
 async function loadAllGenres() {
-    const res = await songApi.post("/genres");
+    const res = await localApi.post("/genres");
     allGenres.value = await res.data;
 }
 
@@ -234,7 +234,7 @@ function selectArtist(artist: Artist) {
 
 async function reloadSelectedArtist() {
     if (!selectedArtist.value) return;
-    const res = await songApi.post("/artistgenres", {
+    const res = await localApi.post("/artistgenres", {
       artist: selectedArtist.value.name,
     });
     artists.value = await res.data;
@@ -243,7 +243,7 @@ async function reloadSelectedArtist() {
 async function removeGenre() {
     if (!selectedArtist.value || !selectedGenreToRemove.value) return;
 
-    await songApi.post("/artistgenres/deletebyname", {
+    await localApi.post("/artistgenres/deletebyname", {
         artist_id: selectedArtist.value.id,
         genre: selectedGenreToRemove.value,
     });
@@ -254,7 +254,7 @@ async function removeGenre() {
 async function assignExistingGenre() {
     if (!selectedArtist.value || !selectedGenreToAdd.value) return;
 
-    await songApi.post("/artistgenres/addbyname", {
+    await localApi.post("/artistgenres/addbyname", {
         artist_id: selectedArtist.value.id,
         genre: selectedGenreToAdd.value,
     });
@@ -265,7 +265,7 @@ async function assignExistingGenre() {
 async function createAndAssignGenre() {
     if (!selectedArtist.value || !newGenreName.value) return;
 
-    await songApi.post("/artistgenres/addbyname", {
+    await localApi.post("/artistgenres/addbyname", {
         artist_id: selectedArtist.value.id,
         genre: newGenreName.value,
     });

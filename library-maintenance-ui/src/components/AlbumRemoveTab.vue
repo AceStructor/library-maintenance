@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Album hinzufügen</h2>
+    <h2>Album entfernen</h2>
 
     <input
       v-model="mbid"
@@ -8,8 +8,8 @@
       type="text"
     />
 
-    <button @click="addAlbum" :disabled="loading">
-      {{ loading ? "Sende..." : "Album hinzufügen" }}
+    <button @click="deleteAlbum" :disabled="loading">
+      {{ loading ? "Sende..." : "Album entfernen" }}
     </button>
 
     <p v-if="message">{{ message }}</p>
@@ -19,24 +19,24 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { api } from "../api/client";
+import { api } from "../api/client.js";
 
 const mbid = ref("");
 const loading = ref(false);
 const message = ref("");
 const error = ref("");
 
-const addAlbum = async () => {
+const deleteAlbum = async () => {
   loading.value = true;
   error.value = "";
   message.value = "";
 
   try {
-    await api.post("/album", {
+    await api.post("/album/delete", {
       mbid: mbid.value,
     });
 
-    message.value = "Album erfolgreich hinzugefügt";
+    message.value = "Album erfolgreich enfernt";
     mbid.value = "";
   } catch (err: any) {
     error.value = err.response?.data || err.message;

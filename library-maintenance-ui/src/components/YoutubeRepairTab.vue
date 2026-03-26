@@ -96,7 +96,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { songApi } from "../api/client";
+import { localApi } from "../api/client";
 
 interface TrackResult {
   track_id: number;
@@ -133,7 +133,7 @@ const search = async () => {
   lastSearchArtist.value = artist.value;
 
   try {
-    const response = await songApi.post("/youtube/search", {
+    const response = await localApi.post("/youtube/search", {
       artist: artist.value,
     });
 
@@ -149,7 +149,7 @@ const refreshResults = async () => {
   if (!lastSearchArtist.value) return;
 
   try {
-    const response = await songApi.post("/youtube/search", {
+    const response = await localApi.post("/youtube/search", {
       artist: lastSearchArtist.value,
     });
 
@@ -191,7 +191,7 @@ const retry = async () => {
   error.value = "";
 
   try {
-    await songApi.post("/youtube/retry", {
+    await localApi.post("/youtube/retry", {
       track_mbid: selected.value.track_mbid,
       youtube_code: editedYoutubeCode.value,
       retry_download: retryDownload.value,

@@ -3,11 +3,11 @@
     <h1>Library Maintenance</h1>
 
     <div class="tabs">
-      <button @click="activeTab = 'addalbum'">Album hinzufügen</button>
-      <button @click="activeTab = 'delalbum'">Album entfernen</button>
+      <button @click="activeTab = 'addalbum'">Add Album</button>
+      <button @click="activeTab = 'delalbum'">Remove Album</button>
       <button @click="activeTab = 'youtube'">Youtube Repair</button>
       <button @click="activeTab = 'genre'">Genre Repair</button>
-      <button @click="activeTab = 'playlist'">Playlisten</button>
+      <button @click="activeTab = 'playlist'">Playlists</button>
     </div>
 
     <AlbumAddTab v-if="activeTab === 'addalbum'" />

@@ -6,7 +6,7 @@
     <div>
       <input
         v-model="name"
-        placeholder="Namen eingeben (Optional)"
+        placeholder="Enter name (Optional)"
         type="text"
       />
 
@@ -15,7 +15,7 @@
         v-model="selectedMonth"
         class="bg-gray-700 border border-gray-600 px-2 py-1 rounded"
         >
-        <option disabled value="January">Monat auswählen</option>
+        <option disabled value="January">Select month</option>
         <option
             v-for="m in months"
             :key="m"
@@ -29,7 +29,7 @@
         v-model="selectedYear"
         class="bg-gray-700 border border-gray-600 px-2 py-1 rounded"
         >
-        <option disabled value="26">Jahr auswählen</option>
+        <option disabled value="26">Select year</option>
         <option
             v-for="y in years"
             :key="y"
@@ -42,7 +42,7 @@
 
       <label>
       <input type="checkbox" v-model="autoMode" />
-      Playlist automatisch erstellen
+      Create playlist automatically
       </label>
 
       <div v-if="!autoMode" class="flex gap-2 items-center">
@@ -50,7 +50,7 @@
         v-model="selectedInterval"
         class="bg-gray-700 border border-gray-600 px-2 py-1 rounded"
         >
-        <option disabled value="1 Month">Intervall auswählen</option>
+        <option disabled value="1 Month">Select interval</option>
         <option
             v-for="i in intervals"
             :key="i"
@@ -64,7 +64,7 @@
         v-model="selectedWildness"
         class="bg-gray-700 border border-gray-600 px-2 py-1 rounded"
         >
-        <option disabled value=0>Wildheit auswählen</option>
+        <option disabled value=0>Select wildness</option>
         <option
             v-for="w in [0,1,2,3]"
             :key="w"
@@ -76,7 +76,7 @@
 
         <input
           v-model="playlistLength"
-          placeholder="Länge eingeben"
+          placeholder="Enter length"
           type="number"
         />
       </div>
@@ -84,7 +84,7 @@
 
 
       <button @click="create" :disabled="creating">
-        {{ creating ? "Erstelle..." : "Erstellen" }}
+        {{ creating ? "Creating..." : "Create" }}
       </button>
     </div>
 

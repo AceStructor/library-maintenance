@@ -6,17 +6,17 @@
     <div>
       <input
         v-model="artist"
-        placeholder="Artist eingeben"
+        placeholder="Enter artist"
         type="text"
       />
       <button @click="search" :disabled="loadingSearch">
-        {{ loadingSearch ? "Suche..." : "Suchen" }}
+        {{ loadingSearch ? "Searching..." : "Search" }}
       </button>
     </div>
 
     <!-- Result List -->
     <div v-if="results.length">
-      <h3>Ergebnisse</h3>
+      <h3>Results</h3>
 
       <table>
         <thead>
@@ -79,14 +79,14 @@
 
         <div class="flex items-center gap-2">
             <input type="checkbox" v-model="retryDownload" />
-            <label>Download wiederholen</label>
+            <label>Retry download</label>
         </div>
 
         <button
             @click="retry"
             :disabled="loadingRetry || !selected || (!hasChanged && !retryDownload)"
         >
-            {{ loadingRetry ? "Starte..." : "Speichern & Aktion ausführen" }}
+            {{ loadingRetry ? "Starting..." : "Save & Execute Action" }}
         </button>
     </div>
 
@@ -155,7 +155,7 @@ const refreshResults = async () => {
 
     results.value = response.data;
 
-    // optional: Auswahl wiederherstellen
+    // optional: Restore selection
     if (selected.value) {
       const updated = results.value.find(
         r => r.track_mbid === selected.value?.track_mbid
@@ -197,7 +197,7 @@ const retry = async () => {
       retry_download: retryDownload.value,
     });
 
-    alert("Aktion erfolgreich gestartet");
+    alert("Action successfully started");
   } catch (err: any) {
     error.value = err.response?.data || err.message;
   } finally {

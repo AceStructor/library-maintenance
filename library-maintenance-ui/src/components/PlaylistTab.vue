@@ -3,15 +3,15 @@
     <h1>Playlists</h1>
 
     <div class="tabs">
-      <button @click="activeTab = 'createplaylist'">Playlist hinzufügen</button>
-      <button @click="activeTab = 'updateplaylist'">Playlist bearbeiten</button>
+      <button @click="activeTab = 'createplaylist'">Add Playlist</button>
+      <button @click="activeTab = 'updateplaylist'">Edit Playlist</button>
     </div>
 
     <PlaylistCreateTab v-if="activeTab === 'createplaylist'" />
     <PlaylistUpdateTab v-if="activeTab === 'updateplaylist'" />
 
     <button @click="sync" :disabled="synchronizing">
-      {{ synchronizing ? "synchronisiert..." : "Synchronisieren" }}
+      {{ synchronizing ? "synchronizing..." : "Synchronize" }}
     </button>
     
     <p v-if="error" style="color:red">{{ error }}</p>

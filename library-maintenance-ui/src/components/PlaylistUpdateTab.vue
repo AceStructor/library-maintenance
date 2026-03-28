@@ -33,13 +33,13 @@
           <button
               @click="editPlaylist"
           >
-              Bearbeiten
+              Edit
           </button>
 
           <button
               @click="deletePlaylist"
           >
-              Löschen
+              Delete
           </button>
       </div>
     </div>
@@ -71,20 +71,20 @@
       <div>
         <input
           v-model="playlistLength"
-          placeholder="Länge eingeben"
+          placeholder="Enter length"
           type="number"
         />
 
         <button
               @click="fillPlaylist"
           >
-              Füllen
+              Fill
         </button>
 
 		<button
               @click="addTracks"
           >
-              Tracks hinzufügen
+              Add tracks
         </button>
       </div>
 
@@ -95,14 +95,14 @@
           <button
               @click="deleteTrack"
           >
-              Löschen
+              Delete
           </button>
       </div>
 
 	  <button
 			@click="back"
 		>
-			Zurück
+			Back
 		</button>
     </div>
 

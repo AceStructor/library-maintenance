@@ -2,7 +2,7 @@
   <div v-if="visible" class="overlay">
     <div class="modal">
 
-      <h2 class="mb-4">Tracks hinzufügen</h2>
+      <h2 class="mb-4">Add Tracks</h2>
 
       <p class="mb-2">Playlist: {{ playlist?.name }}</p>
 
@@ -10,7 +10,7 @@
         v-model.number="selectedArtistId"
         class="bg-gray-700 border border-gray-600 px-2 py-1 rounded"
         >
-        <option disabled value="">Artist auswählen</option>
+        <option disabled value="">Select artist</option>
         <option
             v-for="ar in allArtists"
             :key="ar.artist_id"
@@ -25,7 +25,7 @@
         v-model.number="selectedAlbumId"
         class="bg-gray-700 border border-gray-600 px-2 py-1 rounded"
         >
-        <option disabled value="">Album auswählen</option>
+        <option disabled value="">Select album</option>
         <option
             v-for="al in allAlbums"
             :key="al.album_id"
@@ -40,7 +40,7 @@
         v-model.number="selectedTrackId"
         class="bg-gray-700 border border-gray-600 px-2 py-1 rounded"
         >
-        <option disabled value="">Track auswählen</option>
+        <option disabled value="">Select track</option>
         <option
             v-for="tr in allTracks"
             :key="tr.track_id"
@@ -53,7 +53,7 @@
         <button
             @click="addTrack" :disabled="!selectedTrack"
         >
-            Hinzufügen
+            Add
         </button>
 
         <div v-if="selectedTracks.length">
@@ -79,8 +79,8 @@
         </div>
 
       <div class="actions">
-        <button @click="submit" :disabled="!selectedTracks.length">{{ submitting ? "Speichert..." : "Speichern" }}</button>
-        <button @click="close">Abbrechen</button>
+        <button @click="submit" :disabled="!selectedTracks.length">{{ submitting ? "Saving..." : "Save" }}</button>
+        <button @click="close">Cancel</button>
       </div>
 
       <p v-if="error" style="color:red">{{ error }}</p>

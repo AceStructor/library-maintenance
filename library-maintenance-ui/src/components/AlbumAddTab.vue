@@ -1,15 +1,15 @@
 <template>
   <div>
-    <h2>Album hinzufügen</h2>
+    <h2>Add Album</h2>
 
     <input
       v-model="mbid"
-      placeholder="MBID eingeben"
+      placeholder="Enter MBID"
       type="text"
     />
 
     <button @click="addAlbum" :disabled="loading">
-      {{ loading ? "Sende..." : "Album hinzufügen" }}
+      {{ loading ? "Sending..." : "Add Album" }}
     </button>
 
     <p v-if="message">{{ message }}</p>

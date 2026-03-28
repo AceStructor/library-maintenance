@@ -1,15 +1,15 @@
 <template>
   <div>
-    <h2>Album entfernen</h2>
+    <h2>Remove Album</h2>
 
     <input
       v-model="mbid"
-      placeholder="MBID eingeben"
+      placeholder="Enter MBID"
       type="text"
     />
 
     <button @click="deleteAlbum" :disabled="loading">
-      {{ loading ? "Sende..." : "Album entfernen" }}
+      {{ loading ? "Sending..." : "Remove Album" }}
     </button>
 
     <p v-if="message">{{ message }}</p>
@@ -36,7 +36,7 @@ const deleteAlbum = async () => {
       mbid: mbid.value,
     });
 
-    message.value = "Album erfolgreich enfernt";
+    message.value = "Album successfully removed";
     mbid.value = "";
   } catch (err: any) {
     error.value = err.response?.data || err.message;

@@ -7,12 +7,12 @@
         <div class="flex gap-4 mb-4">
             <label class="flex items-center gap-2">
                 <input type="radio" value="search" v-model="mode" />
-                Artist suchen
+                Search artist
             </label>
 
             <label class="flex items-center gap-2">
                 <input type="radio" value="no_genre" v-model="mode" />
-                Artists ohne Genre
+                Artists without genre
             </label>
         </div>
 
@@ -26,7 +26,7 @@
                 @click="searchArtists"
                 class="bg-blue-600 px-3 py-1 rounded hover:bg-blue-700"
             >
-                Suchen
+                Search
             </button>
             </div>
 
@@ -35,14 +35,14 @@
                 @click="loadArtistsWithoutGenre"
                 class="bg-blue-600 px-3 py-1 rounded hover:bg-blue-700"
             >
-                Laden
+                Load
             </button>
         </div>
     </div>
 
     <!-- Result List -->
     <div v-if="artists.length">
-      <h3>Ergebnisse</h3>
+      <h3>Results</h3>
 
         <table class="w-full border-collapse mb-6">
             <thead>
@@ -72,14 +72,14 @@
 
     <div v-if="selectedArtist" class="bg-gray-800 p-4 rounded shadow-lg">
 
-        <h3 class="text-lg mb-4">Genre bearbeiten</h3>
+        <h3 class="text-lg mb-4">Edit genre</h3>
 
         <!-- Artist Info -->
         <div class="grid grid-cols-[120px_1fr] gap-y-2 gap-x-4 mb-4">
             <div class="text-gray-400">Artist</div>
             <div>{{ selectedArtist.name }}</div>
 
-            <div class="text-gray-400">Aktuelle Genres</div>
+            <div class="text-gray-400">Current genres</div>
             <div class="flex flex-wrap gap-2">
             <span class="bg-gray-700 px-2 py-1 rounded text-sm">
                 {{ selectedArtist.genres.join(', ') }}
@@ -91,22 +91,22 @@
         <div class="flex gap-6 mb-4">
             <label>
             <input type="radio" value="add" v-model="editMode" />
-            Genre hinzufügen
+            Add genre
             </label>
 
             <label>
             <input type="radio" value="remove" v-model="editMode" />
-            Genre entfernen
+            Remove genre
             </label>
         </div>
 
-        <!-- Entfernen -->
+        <!-- Remove -->
         <div v-if="editMode === 'remove'" class="flex gap-2 items-center">
             <select
             v-model="selectedGenreToRemove"
             class="bg-gray-700 border border-gray-600 px-2 py-1 rounded"
             >
-            <option disabled value="">Genre auswählen</option>
+            <option disabled value="">Select genre</option>
             <option
                 v-for="g in selectedArtist.genres"
                 :key="g"
@@ -120,11 +120,11 @@
             @click="removeGenre"
             class="bg-red-600 px-3 py-1 rounded hover:bg-red-700"
             >
-            Entfernen
+            Remove
             </button>
         </div>
 
-        <!-- Hinzufügen -->
+        <!-- Add -->
         <div v-if="editMode === 'add'" class="flex flex-col gap-3">
 
             <!-- Bestehendes Genre -->
@@ -133,7 +133,7 @@
                 v-model="selectedGenreToAdd"
                 class="bg-gray-700 border border-gray-600 px-2 py-1 rounded"
             >
-                <option disabled value="">Bestehendes Genre wählen</option>
+                <option disabled value="">Select existing genre</option>
                 <option
                 v-for="g in allGenres"
                 :key="g.id"
@@ -147,15 +147,15 @@
                 @click="assignExistingGenre"
                 class="bg-green-600 px-3 py-1 rounded hover:bg-green-700"
             >
-                Hinzufügen
+                Add
             </button>
             </div>
 
-            <!-- Neues Genre -->
+            <!-- New genre -->
             <div class="flex gap-2 items-center">
             <input
                 v-model="newGenreName"
-                placeholder="Neues Genre..."
+                placeholder="New genre..."
                 class="bg-gray-700 border border-gray-600 px-2 py-1 rounded"
             />
 
@@ -163,7 +163,7 @@
                 @click="createAndAssignGenre"
                 class="bg-green-600 px-3 py-1 rounded hover:bg-green-700"
             >
-                Neu erstellen
+                Create new
             </button>
             </div>
 
